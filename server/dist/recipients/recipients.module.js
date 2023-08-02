@@ -6,22 +6,23 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AppModule = void 0;
+exports.RecipientsModule = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
-const app_controller_1 = require("./app.controller");
-const app_service_1 = require("./app.service");
-const recipients_module_1 = require("./recipients/recipients.module");
-let AppModule = exports.AppModule = class AppModule {
+const recipients_service_1 = require("./recipients.service");
+const recipients_controller_1 = require("./recipients.controller");
+const recipient_schema_1 = require("./schemas/recipient.schema");
+let RecipientsModule = exports.RecipientsModule = class RecipientsModule {
 };
-exports.AppModule = AppModule = __decorate([
+exports.RecipientsModule = RecipientsModule = __decorate([
     (0, common_1.Module)({
+        providers: [recipients_service_1.RecipientsService],
+        controllers: [recipients_controller_1.RecipientsController],
         imports: [
-            recipients_module_1.RecipientsModule,
-            mongoose_1.MongooseModule.forRoot('mongodb+srv://backendsupport:QRSbPtVzG83kzF6H@cluster0.2q7wplk.mongodb.net/450?retryWrites=true&w=majority'),
+            mongoose_1.MongooseModule.forFeature([
+                { name: recipient_schema_1.Recipient.name, schema: recipient_schema_1.RecipientSchema },
+            ]),
         ],
-        controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService],
     })
-], AppModule);
-//# sourceMappingURL=app.module.js.map
+], RecipientsModule);
+//# sourceMappingURL=recipients.module.js.map

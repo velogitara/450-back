@@ -17,26 +17,17 @@ let AppController = exports.AppController = class AppController {
         this.appService = appService;
     }
     getHello() {
-        return this.appService.getHello();
-    }
-    create() {
-        console.log('post');
+        return 'hello NestJS';
     }
 };
 __decorate([
-    (0, common_1.Get)('test'),
+    (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", String)
 ], AppController.prototype, "getHello", null);
-__decorate([
-    (0, common_1.Post)('create'),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], AppController.prototype, "create", null);
 exports.AppController = AppController = __decorate([
-    (0, common_1.Controller)('api'),
+    (0, common_1.Controller)(),
     __metadata("design:paramtypes", [app_service_1.AppService])
 ], AppController);
 //# sourceMappingURL=app.controller.js.map

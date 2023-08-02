@@ -23,15 +23,13 @@
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
 import { HydratedDocument } from 'mongoose';
-export type UserDocument = HydratedDocument<User>;
-export declare class User extends Document {
+export type RecepientDocument = HydratedDocument<Recipient>;
+export declare class Recipient {
     name: string;
-    email: string;
-    password: string;
-    isActive: boolean;
+    phone: number;
 }
-export declare const UserSchema: import("mongoose").Schema<User, import("mongoose").Model<User, any, any, any, import("mongoose").Document<unknown, any, User> & User & {
+export declare const RecipientSchema: import("mongoose").Schema<Recipient, import("mongoose").Model<Recipient, any, any, any, import("mongoose").Document<unknown, any, Recipient> & Recipient & {
     _id: import("mongoose").Types.ObjectId;
-}, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, User, import("mongoose").Document<unknown, {}, User> & User & {
+}, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Recipient, import("mongoose").Document<unknown, {}, Recipient> & Recipient & {
     _id: import("mongoose").Types.ObjectId;
 }>;
