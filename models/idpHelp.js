@@ -17,97 +17,107 @@ const documentType = ['idCard', 'passport'];
 
 const idpHelpSchema = new Schema(
   {
-    name: {
-      type: String,
-      match: nameRegEx,
-      required: [true, 'Будь ласка введіть коректне значення імені'],
-    },
-    surname: {
-      type: String,
-      match: nameRegEx,
-      required: [true, 'Будь ласка введіть коректне значення прізвища'],
-    },
-    patronymic: {
-      type: String,
-      default: '',
-    },
-    city: {
-      type: String,
-      match: cityRegEx,
-      required: [true, 'Будь ласка введіть правильну назву міста'],
-    },
-    street: {
-      type: String,
-      match: cityRegEx,
-      default: '',
-    },
-    houseNumber: {
-      type: String,
-      default: '',
-    },
-
-    flatNumber: {
-      type: String,
-      match: flatNumberRegEx,
-      default: '',
-    },
-    documentType: {
-      type: String,
-      require: true,
-      enum: documentType,
-    },
-    // passportSeries: {
-    //   type: String,
-    //   match: passportSeriesRegex,
-    //   default: '',
-    // },
-    // passportNumber: {
-    //   type: String,
-    //   match: passportNumberRegex,
-    //   default: '',
-    // },
-
-    passport: {
-      type: String,
-      require: true,
-      validate: {
-        validator: passportValidator,
-        message: 'Passport should be either 9 digits or 2 capital letters followed by 6 digits.',
-      },
-    },
-    // idCard: {
-    //   type: String,
-    //   match: idCardRegex,
-    //   require: true,
-    // },
-    identificationNumber: {
-      type: String,
-      match: identificationNumberRegEx,
-      require: true,
-    },
-    idpCertificateNumber: {
-      type: String,
-      match: idpCertificateNumberRegEx,
-      default: '',
-    },
-    movementArea: {
-      type: String,
-      match: address.areaCollection,
-    },
-    movementCity: {
-      type: String,
-      default: '',
-    },
-    numberOfFamilyMembers: {
-      type: String,
-      default: '',
-    },
-    phone: {
-      type: String,
+    maxQuantity: {
+      type: Number,
       required: true,
-      match: phoneRegex,
-      unique: true,
     },
+    status: {},
+    persons: [
+      {
+        name: {
+          type: String,
+          match: nameRegEx,
+          required: [true, 'Будь ласка введіть коректне значення імені'],
+        },
+        surname: {
+          type: String,
+          match: nameRegEx,
+          required: [true, 'Будь ласка введіть коректне значення прізвища'],
+        },
+        patronymic: {
+          type: String,
+          default: '',
+        },
+        city: {
+          type: String,
+          match: cityRegEx,
+          required: [true, 'Будь ласка введіть правильну назву міста'],
+        },
+        street: {
+          type: String,
+          match: cityRegEx,
+          default: '',
+        },
+        houseNumber: {
+          type: String,
+          default: '',
+        },
+
+        flatNumber: {
+          type: String,
+          match: flatNumberRegEx,
+          default: '',
+        },
+        documentType: {
+          type: String,
+          require: true,
+          enum: documentType,
+        },
+        // passportSeries: {
+        //   type: String,
+        //   match: passportSeriesRegex,
+        //   default: '',
+        // },
+        // passportNumber: {
+        //   type: String,
+        //   match: passportNumberRegex,
+        //   default: '',
+        // },
+
+        passport: {
+          type: String,
+          require: true,
+          validate: {
+            validator: passportValidator,
+            message:
+              'Passport should be either 9 digits or 2 capital letters followed by 6 digits.',
+          },
+        },
+        // idCard: {
+        //   type: String,
+        //   match: idCardRegex,
+        //   require: true,
+        // },
+        identificationNumber: {
+          type: String,
+          match: identificationNumberRegEx,
+          require: true,
+        },
+        idpCertificateNumber: {
+          type: String,
+          match: idpCertificateNumberRegEx,
+          default: '',
+        },
+        movementArea: {
+          type: String,
+          match: address.areaCollection,
+        },
+        movementCity: {
+          type: String,
+          default: '',
+        },
+        numberOfFamilyMembers: {
+          type: String,
+          default: '',
+        },
+        phone: {
+          type: String,
+          required: true,
+          match: phoneRegex,
+          unique: true,
+        },
+      },
+    ],
   },
   { versionKey: false, timestamps: true }
 );
