@@ -8,39 +8,42 @@ import {
   Param,
   HttpCode,
   HttpStatus,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CreateOrderDto } from '../orders/dto/create-order.dto';
 import { UpdateOrderDto } from '../orders/dto/update-order.dto';
 import { OrdersService } from './orders.service';
-import { Order } from '../orders/schemas/order.schema';
+import { OrderEntity } from '../orders/schemas/order.schema';
 
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly orderService: OrdersService) {}
 
   @Get()
-  getAll(): Promise<Order[]> {
+  getAll(): Promise<OrderEntity[]> {
     return this.orderService.getAll();
   }
 
   @Get(':id')
-  getOne(@Param('id') id: string): Promise<Order> {
+  getOne(@Param('id') id: string): Promise<OrderEntity> {
     return this.orderService.getOne(id);
   }
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createOrderDto: CreateOrderDto): Promise<Order> {
+  create(
+    @Body(new ValidationPipe()) createOrderDto: CreateOrderDto,
+  ): Promise<OrderEntity> {
     return this.orderService.create(createOrderDto);
   }
   @Delete(':id')
-  remove(@Param('id') id: string): Promise<Order> {
+  remove(@Param('id') id: string): Promise<OrderEntity> {
     return this.orderService.remove(id);
   }
   @Put(':id')
   update(
     @Body() updateOrderDto: UpdateOrderDto,
     @Param('id') id: string,
-  ): Promise<Order> {
+  ): Promise<OrderEntity> {
     return this.orderService.update(id, updateOrderDto);
   }
 }

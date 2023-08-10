@@ -4,28 +4,28 @@ import { Model } from 'mongoose';
 import { CreateOrderDto } from '../orders/dto/create-order.dto';
 import { UpdateOrderDto } from '../orders/dto/update-order.dto';
 
-import { Order, OrderDocument } from '../orders/schemas/order.schema';
+import { OrderEntity, OrderDocument } from '../orders/schemas/order.schema';
 @Injectable()
 export class OrdersService {
   constructor(
-    @InjectModel(Order.name)
+    @InjectModel(OrderEntity.name)
     private orderModel: Model<OrderDocument>,
   ) {}
 
-  async getAll(): Promise<Order[]> {
+  async getAll(): Promise<OrderEntity[]> {
     return this.orderModel.find().exec();
   }
-  async getOne(id: string): Promise<Order> {
+  async getOne(id: string): Promise<OrderEntity> {
     return this.orderModel.findById(id);
   }
-  async create(userDto: CreateOrderDto): Promise<Order> {
-    const newRecipient = new this.orderModel(userDto);
-    return newRecipient.save();
+  async create(orderDto: CreateOrderDto): Promise<OrderEntity> {
+    const newOrder = new this.orderModel(orderDto);
+    return newOrder.save();
   }
-  async remove(id: string): Promise<Order> {
+  async remove(id: string): Promise<OrderEntity> {
     return this.orderModel.findByIdAndRemove(id);
   }
-  async update(id: string, userDto: UpdateOrderDto): Promise<Order> {
+  async update(id: string, userDto: UpdateOrderDto): Promise<OrderEntity> {
     return this.orderModel.findByIdAndUpdate(id, userDto, {
       new: true,
     });
