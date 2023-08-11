@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { CreateOrderDto } from '../orders/dto/create-order.dto';
 import { UpdateOrderDto } from '../orders/dto/update-order.dto';
+import { CreatePersonDto } from '../orders/dto/create-person.dto';
 import { OrdersService } from './orders.service';
 import { OrderEntity } from '../orders/schemas/order.schema';
 
@@ -45,5 +46,12 @@ export class OrdersController {
     @Param('id') id: string,
   ): Promise<OrderEntity> {
     return this.orderService.update(id, updateOrderDto);
+  }
+  @Post(':orderId/add-person')
+  async addPersonToOrder(
+    @Param('orderId') orderId: string,
+    @Body() createPersonDto: CreatePersonDto,
+  ) {
+    return this.orderService.addPersonToOrder(orderId, createPersonDto);
   }
 }

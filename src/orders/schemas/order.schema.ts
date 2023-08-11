@@ -25,6 +25,36 @@ export class OrderEntity {
 
   @Prop({ type: String, enum: OrderCategory, required: true })
   category: OrderCategory[];
+  @Prop([
+    {
+      name: String,
+      surname: String,
+      patronymic_name: String,
+      city: String,
+      street: String,
+      building: String,
+      apartment: String,
+      birthCertificate: String,
+      regionFrom: String, // Replace with the appropriate type, e.g., ObjectId
+      settlementFrom: String, // Replace with the appropriate type, e.g., ObjectId
+      memberNumber: Number,
+      phone: String,
+    },
+  ])
+  persons: {
+    name: string;
+    surname: string;
+    patronymic_name: string;
+    city: string;
+    street: string;
+    building: string;
+    apartment: string;
+    birthCertificate: string;
+    regionFrom: string; // Replace with the appropriate type, e.g., ObjectId
+    settlementFrom: string; // Replace with the appropriate type, e.g., ObjectId
+    memberNumber: number;
+    phone: string;
+  }[];
 }
 
 export const OrderSchema = SchemaFactory.createForClass(OrderEntity);
