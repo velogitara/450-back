@@ -1,7 +1,7 @@
 const express = require('express');
 
 const router = express.Router();
-const { idpHelp: ctrl } = require('../../controllers');
+const { orders: ctrl } = require('../../controllers');
 const {
   validateBody,
   isValidId,
@@ -9,18 +9,17 @@ const {
   ctrlWrapper,
   modifyRequestBody,
 } = require('../../middlewares');
-const { idpHelpJoiSchemas } = require('../../models/idpHelp');
+const { orderJoiSchemas } = require('../../models/order');
 
-router.get('/', ctrlWrapper(auth), ctrlWrapper(ctrl.getAll));
+// router.get('/', ctrlWrapper(auth), ctrlWrapper(ctrl.getAll));
+router.get('/', ctrlWrapper(ctrl.getAll));
 
 router.post(
   '/',
   ctrlWrapper(modifyRequestBody),
-  validateBody(idpHelpJoiSchemas.addSchema),
+  validateBody(orderJoiSchemas.addSchema),
   ctrlWrapper(ctrl.add)
 );
-
-router.post('/movetoarchive', ctrlWrapper(auth), ctrl.moveToArchive);
 
 // router.get('/:contactId', ctrlWrapper(auth), isValidId, ctrlWrapper(ctrl.getById));
 
