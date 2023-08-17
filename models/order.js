@@ -1,17 +1,15 @@
 const { Schema, model } = require('mongoose');
 const Joi = require('joi');
-const { handleSchemaValidationErrors, handlePassportValidation } = require('../helpers');
+const { handleSchemaValidationErrors } = require('../helpers');
 const { address } = require('../constants');
-
-const { passportValidator, passportValidatorJoi } = handlePassportValidation;
 
 const phoneRegex = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/;
 const nameRegEx = /^[а-яА-ЯёЁіІa-zA-Z-`\s]+$/;
 const cityRegEx = /^[а-яА-ЯёЁіІїЇ\-`\s]+$/;
 const flatNumberRegEx = /^[0-9]{1,9}$/;
-const identificationNumberRegEx = /^[0-9]{12}$/;
+const emailRegEx = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
 const idpCertificateNumberRegEx = /^\d{4}-\d{10}$/;
-const documentType = ['idCard', 'passport'];
 
 const orderSchema = new Schema(
   {
@@ -19,13 +17,25 @@ const orderSchema = new Schema(
       type: Number,
       required: true,
     },
-    status: {},
+    status: {
+      type: String,
+      enum: ['active', 'archived'],
+    },
+    type: {
+      type: String,
+      enum: ['temp_moved', 'invalid', 'child'],
+    },
     persons: [
       {
         name: {
           type: String,
           match: nameRegEx,
           required: [true, 'Будь ласка введіть коректне значення імені'],
+        },
+        email: {
+          type: String,
+          match: emailRegEx,
+          required: true,
         },
         surname: {
           type: String,
@@ -36,7 +46,7 @@ const orderSchema = new Schema(
           type: String,
           default: '',
         },
-        city: {
+        settlement: {
           type: String,
           match: cityRegEx,
           required: [true, 'Будь ласка введіть правильну назву міста'],
@@ -46,60 +56,64 @@ const orderSchema = new Schema(
           match: cityRegEx,
           default: '',
         },
-        houseNumber: {
+        building: {
           type: String,
           default: '',
         },
 
-        flatNumber: {
+        apartment: {
           type: String,
           match: flatNumberRegEx,
           default: '',
-        },
-        documentType: {
-          type: String,
-          require: true,
-          enum: documentType,
-        },
-        passport: {
-          type: String,
-          require: true,
-          validate: {
-            validator: passportValidator,
-            message:
-              'Passport should be either 9 digits or 2 capital letters followed by 6 digits.',
-          },
-        },
-        identificationNumber: {
-          type: String,
-          match: identificationNumberRegEx,
-          require: true,
         },
         idpCertificateNumber: {
           type: String,
           match: idpCertificateNumberRegEx,
           default: '',
         },
-        movementArea: {
+        birthCertificateNumber: {
+          type: String,
+          match: idpCertificateNumberRegEx,
+          default: '',
+        },
+        regionFrom: {
           type: String,
           match: address.areaCollection,
         },
-        movementCity: {
+        settlementFrom: {
           type: String,
           default: '',
         },
-        numberOfFamilyMembers: {
-          type: String,
+
+        memberNumber: {
+          type: Number,
           default: '',
         },
         phone: {
           type: String,
           required: true,
           match: phoneRegex,
-          unique: true,
+        },
+        isActivated: {
+          type: Boolean,
+          default: false,
+        },
+        activationLink: {
+          type: String,
+          default: '',
         },
       },
     ],
+    createdDate: {
+      type: Date,
+      default: new Date(),
+    },
+    changedDate: {
+      type: Date,
+    },
+    closeDate: {
+      type: Date,
+    },
   },
   { versionKey: false, timestamps: true }
 );
@@ -107,27 +121,31 @@ const orderSchema = new Schema(
 orderSchema.post('save', handleSchemaValidationErrors);
 
 const addSchema = Joi.object({
+  maxQuantity: Joi.number().required(),
+  status: Joi.string().valid('active', 'archived'),
+  type: Joi.string().valid('temp_moved', 'invalid', 'child'),
+});
+
+const addPersonToOrderSchema = Joi.object({
   name: Joi.string().pattern(nameRegEx).required(),
+  email: Joi.string().email().required(),
   surname: Joi.string().pattern(nameRegEx).required(),
   patronymic: Joi.string(),
-  city: Joi.string().pattern(cityRegEx).required(),
+  settlement: Joi.string().pattern(cityRegEx).required(),
   street: Joi.string().pattern(cityRegEx).required(),
-  houseNumber: Joi.string(),
-  flatNumber: Joi.string().pattern(flatNumberRegEx),
-  documentType: Joi.string().valid(...documentType),
-  passport: Joi.string()
-    .required()
-    .custom(passportValidatorJoi, 'Custom validation for Ukrainian passport'),
-  identificationNumber: Joi.string().pattern(identificationNumberRegEx).required(),
+  building: Joi.string(),
+  apartment: Joi.string().pattern(flatNumberRegEx),
   idpCertificateNumber: Joi.string().pattern(idpCertificateNumberRegEx),
-  movementArea: Joi.string().valid(...address.areaCollection),
-  movementCity: Joi.string(),
-  numberOfFamilyMembers: Joi.number(),
+  birthCertificateNumber: Joi.string().pattern(idpCertificateNumberRegEx),
+  regionFrom: Joi.string().valid(...address.areaCollection),
+  settlementFrom: Joi.string(),
+  memberNumber: Joi.number(),
   phone: Joi.string().pattern(phoneRegex).required(),
 });
 
 const orderJoiSchemas = {
   addSchema,
+  addPersonToOrderSchema,
 };
 
 const Order = model('order', orderSchema);

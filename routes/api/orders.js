@@ -2,26 +2,21 @@ const express = require('express');
 
 const router = express.Router();
 const { orders: ctrl } = require('../../controllers');
-const {
-  validateBody,
-  isValidId,
-  auth,
-  ctrlWrapper,
-  modifyRequestBody,
-} = require('../../middlewares');
+const { validateBody, isValidId, auth, ctrlWrapper } = require('../../middlewares');
 const { orderJoiSchemas } = require('../../models/order');
 
-// router.get('/', ctrlWrapper(auth), ctrlWrapper(ctrl.getAll));
 router.get('/', ctrlWrapper(ctrl.getAll));
 
-router.post(
-  '/',
-  ctrlWrapper(modifyRequestBody),
-  validateBody(orderJoiSchemas.addSchema),
-  ctrlWrapper(ctrl.add)
-);
+router.post('/', validateBody(orderJoiSchemas.addSchema), ctrlWrapper(ctrl.add));
 
-// router.get('/:contactId', ctrlWrapper(auth), isValidId, ctrlWrapper(ctrl.getById));
+router.get('/:orderId', isValidId, ctrlWrapper(ctrl.getOrderById));
+
+router.patch(
+  '/:orderId/add-person',
+  isValidId,
+  validateBody(orderJoiSchemas.addPersonToOrderSchema),
+  ctrlWrapper(ctrl.addPersonToOrder)
+);
 
 // router.put(
 //   '/:contactId',
