@@ -1,6 +1,6 @@
 const { Schema, model } = require('mongoose');
 const Joi = require('joi');
-const { handleSchemaValidationErrors } = require('../helpers');
+const { handleSchemaValidationErrors, handleSchemaStatusModify } = require('../helpers');
 const { address } = require('../constants');
 
 const phoneRegex = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/;
@@ -19,7 +19,7 @@ const orderSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ['active', 'archived'],
+      enum: ['active', 'passive', 'archived'],
     },
     type: {
       type: String,
@@ -42,7 +42,7 @@ const orderSchema = new Schema(
           match: nameRegEx,
           required: [true, 'Будь ласка введіть коректне значення прізвища'],
         },
-        patronymic: {
+        patronymic_name: {
           type: String,
           default: '',
         },
@@ -66,11 +66,11 @@ const orderSchema = new Schema(
           match: flatNumberRegEx,
           default: '',
         },
-        idpCertificateNumber: {
-          type: String,
-          match: idpCertificateNumberRegEx,
-          default: '',
-        },
+        // idpCertificateNumber: {
+        //   type: String,
+        //   match: idpCertificateNumberRegEx,
+        //   default: '',
+        // },
         birthCertificateNumber: {
           type: String,
           match: idpCertificateNumberRegEx,
@@ -110,6 +110,7 @@ const orderSchema = new Schema(
     },
     changedDate: {
       type: Date,
+      default: '',
     },
     closeDate: {
       type: Date,
@@ -119,10 +120,11 @@ const orderSchema = new Schema(
 );
 
 orderSchema.post('save', handleSchemaValidationErrors);
+orderSchema.pre('save', handleSchemaStatusModify);
 
 const addSchema = Joi.object({
   maxQuantity: Joi.number().required(),
-  status: Joi.string().valid('active', 'archived'),
+  status: Joi.string().valid('active', 'passive', 'archived'),
   type: Joi.string().valid('temp_moved', 'invalid', 'child'),
 });
 
@@ -130,7 +132,7 @@ const addPersonToOrderSchema = Joi.object({
   name: Joi.string().pattern(nameRegEx).required(),
   email: Joi.string().email().required(),
   surname: Joi.string().pattern(nameRegEx).required(),
-  patronymic: Joi.string(),
+  patronymic_name: Joi.string(),
   settlement: Joi.string().pattern(cityRegEx).required(),
   street: Joi.string().pattern(cityRegEx).required(),
   building: Joi.string(),
