@@ -8,6 +8,7 @@ require('dotenv').config();
 const authRouter = require('./routes/api/auth');
 const contactsRouter = require('./routes/api/contacts');
 const ordersRouter = require('./routes/api/orders');
+const swaggerRouter = require('./routes/api/swagger');
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use(async (req, res, next) => {
   next();
 });
 
+app.use('/api', swaggerRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/contacts', contactsRouter);
 app.use('/api/orders', ordersRouter);
