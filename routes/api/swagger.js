@@ -6,7 +6,7 @@ const options = {
   // explorer: true,
 };
 
-router.use('/api-docs', swaggerUi.serve);
-router.get('/api-docs', swaggerUi.setup(swaggerDocument, options));
+router.use('/docs', swaggerUi.serve);
+router.get('/docs', swaggerUi.setup(swaggerDocument, options));
 
 module.exports = router;
