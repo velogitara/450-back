@@ -32,7 +32,7 @@ const addPersonToOrder = async (req, res) => {
     throw HttpError(404, 'Order not found');
   }
 
-  return res.status(201).json({ message: 'Person added to order successfully' });
+  return res.status(201).json({ user: newPerson, message: 'Person added to order successfully' });
 };
 
 module.exports = addPersonToOrder;

@@ -274,6 +274,87 @@
                 }
             }
         },
+        "/fund": {
+            "get": {
+                "tags": [
+                    "Громадська організація"
+                ],
+                "summary": "Отримати ресурс",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Fund"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Ресурс відсутній",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Редагувати ресурс",
+                "tags": [
+                    "Громадська організація"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Fund"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Ресурс відредаговано",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Fund"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Ресурс не знайдено",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "406": {
+                        "description": "Помилка валідації даних",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "500": {
+                        "description": "Помилка на боці серверу",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
         "/team": {
             "get": {
                 "tags": [
@@ -602,7 +683,7 @@
             "get": {
                 "summary": "Отримати ресурс",
                 "tags": [
-                    "Допомога"
+                    "Списки на отримання допомоги"
                 ],
                 "parameters": [
                     {
@@ -646,7 +727,7 @@
                 ],
                 "summary": "Редагувати ресурс",
                 "tags": [
-                    "Допомога"
+                    "Списки на отримання допомоги"
                 ],
                 "parameters": [
                     {
@@ -708,7 +789,7 @@
                 ],
                 "summary": "Видалити ресурс",
                 "tags": [
-                    "Допомога"
+                    "Списки на отримання допомоги"
                 ],
                 "parameters": [
                     {
@@ -752,7 +833,7 @@
                 ],
                 "summary": "Отримати ресурси",
                 "tags": [
-                    "Допомога"
+                    "Списки на отримання допомоги"
                 ],
                 "parameters": [
                     {
@@ -815,13 +896,68 @@
                         }
                     }
                 }
+            },
+            "post": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": [
+                    "Списки на отримання допомоги"
+                ],
+                "summary": "Додати новий ресурс",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Order"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Ресурс створено",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Order"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Ресурс відсутній",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "406": {
+                        "description": "Помилка валідації даних",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "500": {
+                        "description": "Помилка на боці серверу",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
             }
         },
         "/orders/quantity": {
             "get": {
                 "summary": "Отримати ресурси",
                 "tags": [
-                    "Допомога"
+                    "Списки на отримання допомоги"
                 ],
                 "responses": {
                     "200": {
@@ -2107,6 +2243,59 @@
                     }
                 }
             }
+        },
+        "/export/order/{id}": {
+            "post": {
+                "summary": "Отримати ресурси",
+                "tags": [
+                    "Експорт"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/vnd.ms-excel": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            },
+                            "application/octet-stream": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Невірний запит",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Ресурс відсутній",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Помилка на боці серверу",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -2138,16 +2327,6 @@
                                     "format": "date-time"
                                 }
                             }
-                        }
-                    }
-                },
-                "examples": {
-                    "example1": {
-                        "value": {
-                            "issuedHumanitarianKits": 657,
-                            "receivedHumanitarianAid": 455,
-                            "sumDonats": 76,
-                            "infoAtDate": "2023-08-17T22:58:38.831Z"
                         }
                     }
                 }
@@ -2246,33 +2425,6 @@
                                 "title",
                                 "subtitle"
                             ]
-                        },
-                        "examples": {
-                            "view": {
-                                "value": {
-                                    "picture": [
-                                        "binary data"
-                                    ],
-                                    "bgColorStart": "#ff0000",
-                                    "bgColorEnd": "#ff0000"
-                                },
-                                "title": {
-                                    "value": {
-                                        "text": "Sample Title",
-                                        "colorStart": "#00ff00",
-                                        "colorMiddle": "#00ff00",
-                                        "colorEnd": "#00ff00"
-                                    }
-                                },
-                                "subtitle": {
-                                    "value": {
-                                        "text": "Sample Subtitle",
-                                        "colorStart": "#0000ff",
-                                        "colorMiddle": "#0000ff",
-                                        "colorEnd": "#0000ff"
-                                    }
-                                }
-                            }
                         }
                     }
                 }
@@ -2419,6 +2571,18 @@
                 "type": "array",
                 "items": {
                     "$ref": "#/components/schemas/Banner"
+                }
+            },
+            "Fund": {
+                "type": "object",
+                "required": [
+                    "picture"
+                ],
+                "properties": {
+                    "picture": {
+                        "type": "string",
+                        "example": "/pic/banner.jpg"
+                    }
                 }
             },
             "Team": {
@@ -2586,6 +2750,7 @@
                     "maxQuantity",
                     "type",
                     "status",
+                    "issueDate",
                     "createDate",
                     "changedDate",
                     "closeDate"
@@ -2599,13 +2764,26 @@
                         "type": "integer",
                         "example": 541
                     },
-                    "receivedHumanitarianAid": {
+                    "type_": {
                         "type": "string",
                         "enum": [
                             "temp_moved",
                             "invalid",
                             "child"
                         ]
+                    },
+                    "status_": {
+                        "type": "string",
+                        "enum": [
+                            "active",
+                            "archive",
+                            "ready",
+                            "complete"
+                        ]
+                    },
+                    "issueDate": {
+                        "type": "string",
+                        "example": "2023-08-17T22:58:38.831Z"
                     },
                     "createDate": {
                         "type": "string",

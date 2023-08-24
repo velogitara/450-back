@@ -143,3 +143,10 @@ GET /api/docs/swagger-ui.css 22-08-2023_03:24:11
 GET /api/docs/swagger-ui-init.js 22-08-2023_03:24:11
 GET /api/docs/swagger-ui-standalone-preset.js 22-08-2023_03:24:11
 GET /api/docs/swagger-ui-bundle.js 22-08-2023_03:24:11
+PATCH /api/orders/64df11e82935c9dc3b18daf0/add-person 24-08-2023_09:42:05
+PATCH /api/orders/64df11e82935c9dc3b18daf0/add-person 24-08-2023_09:42:25
+PATCH /api/orders/64df11e82935c9dc3b18daf0/add-person 24-08-2023_09:43:41
+GET /api/docs/swagger-ui.css 24-08-2023_09:55:00
+GET /api/docs/swagger-ui-standalone-preset.js 24-08-2023_09:55:00
+GET /api/docs/swagger-ui-init.js 24-08-2023_09:55:00
+GET /api/docs/swagger-ui-bundle.js 24-08-2023_09:55:00

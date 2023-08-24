@@ -19,7 +19,7 @@ const orderSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ['active', 'passive', 'archived'],
+      enum: ['active', 'ready', 'archive', 'complete'],
     },
     type: {
       type: String,
@@ -80,10 +80,6 @@ const orderSchema = new Schema(
           type: String,
           match: address.areaCollection,
         },
-        settlementFrom: {
-          type: String,
-          default: '',
-        },
 
         memberNumber: {
           type: Number,
@@ -114,6 +110,7 @@ const orderSchema = new Schema(
     },
     closeDate: {
       type: Date,
+      default: '',
     },
   },
   { versionKey: false, timestamps: true }
@@ -124,7 +121,7 @@ orderSchema.pre('save', handleSchemaStatusModify);
 
 const addSchema = Joi.object({
   maxQuantity: Joi.number().required(),
-  status: Joi.string().valid('active', 'passive', 'archived'),
+  status: Joi.string().valid('active', 'ready', 'archive', 'complete'),
   type: Joi.string().valid('temp_moved', 'invalid', 'child'),
 });
 
@@ -140,7 +137,6 @@ const addPersonToOrderSchema = Joi.object({
   idpCertificateNumber: Joi.string().pattern(idpCertificateNumberRegEx),
   birthCertificateNumber: Joi.string().pattern(idpCertificateNumberRegEx),
   regionFrom: Joi.string().valid(...address.areaCollection),
-  settlementFrom: Joi.string(),
   memberNumber: Joi.number(),
   phone: Joi.string().pattern(phoneRegex).required(),
 });
