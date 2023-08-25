@@ -5,8 +5,9 @@ const { address } = require('../constants');
 
 const phoneRegex = /^[+]?(380)[\s][0-9]{2}[\s][0-9]{3}[\s]?[0-9]{2}[\s]?[0-9]{2}[\s]?$/;
 const pibRegEx = /^[\sА-Яа-яІіЇїЄєҐґЁё'-]+$/;
-const cityRegEx = /^[а-яА-ЯёЁіІїЇ\-`\s]+$/;
-const flatNumberRegEx = /^[0-9]{1,9}$/;
+const cityRegEx = /^[\sА-Яа-яІіЇїЄєҐґЁё'-.]+$/;
+const buildingRegEx = /^\d[0-9А-Яа-яІіЇїЄєҐґЁё-]*$/;
+const flatNumberRegEx = /^\d+$/;
 const emailRegEx = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i;
 
 const idpCertificateNumberRegEx = /^\d{4}-\d{10}$/;
@@ -31,7 +32,6 @@ const orderSchema = new Schema(
     },
     persons: [
       {
-        // id: { type: String, required: true },
         name: {
           type: String,
           match: pibRegEx,
@@ -52,18 +52,21 @@ const orderSchema = new Schema(
           match: pibRegEx,
           required: [true, 'Поле може містити тільки кирилицю, пробіл, дефіс та апостроф'],
         },
-        settlement: {
-          type: String,
-          match: cityRegEx,
-          required: [true, 'Будь ласка введіть правильну назву міста'],
-        },
+        // settlement: {
+        //   type: String,
+        //   match: cityRegEx,
+        //   required: [true, 'Будь ласка введіть правильну назву міста'],
+        // },
         street: {
           type: String,
           match: cityRegEx,
+          required: true,
           default: '',
         },
         building: {
           type: String,
+          match: buildingRegEx,
+          required: true,
           default: '',
         },
 
@@ -72,10 +75,10 @@ const orderSchema = new Schema(
           match: flatNumberRegEx,
           default: '',
         },
-        disabilityCertificateNumber: {
-          type: String,
-          default: '',
-        },
+        // disabilityCertificateNumber: {
+        //   type: String,
+        //   default: '',
+        // },
         // idpCertificateNumber: {
         //   type: String,
         //   match: idpCertificateNumberRegEx,
@@ -150,7 +153,7 @@ const addPersonToOrderSchema = Joi.object({
   email: Joi.string().email().required(),
   last_name: Joi.string().pattern(pibRegEx).required(),
   patronymic_name: Joi.string().pattern(pibRegEx).required(),
-  settlement: Joi.string().pattern(cityRegEx).required(),
+  // settlement: Joi.string().pattern(cityRegEx).required(),
   street: Joi.string().pattern(cityRegEx).required(),
   building: Joi.string(),
   apartment: Joi.string().pattern(flatNumberRegEx),
