@@ -3,11 +3,11 @@ const Joi = require('joi');
 const { handleSchemaValidationErrors, handleSchemaStatusModify } = require('../helpers');
 const { address } = require('../constants');
 
-const phoneRegex = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/;
-const nameRegEx = /^[а-яА-ЯёЁіІa-zA-Z-`\s]+$/;
+const phoneRegex = /^[+]?(380)[\s][0-9]{2}[\s][0-9]{3}[\s]?[0-9]{2}[\s]?[0-9]{2}[\s]?$/;
+const pibRegEx = /^[\sА-Яа-яІіЇїЄєҐґЁё'-]+$/;
 const cityRegEx = /^[а-яА-ЯёЁіІїЇ\-`\s]+$/;
 const flatNumberRegEx = /^[0-9]{1,9}$/;
-const emailRegEx = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const emailRegEx = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i;
 
 const idpCertificateNumberRegEx = /^\d{4}-\d{10}$/;
 
@@ -21,30 +21,36 @@ const orderSchema = new Schema(
       type: String,
       enum: ['active', 'ready', 'archive', 'complete'],
     },
+    issueDate: {
+      type: Date,
+      required: true,
+    },
     type: {
       type: String,
       enum: ['temp_moved', 'invalid', 'child'],
     },
     persons: [
       {
+        // id: { type: String, required: true },
         name: {
           type: String,
-          match: nameRegEx,
-          required: [true, 'Будь ласка введіть коректне значення імені'],
+          match: pibRegEx,
+          required: [true, 'Поле може містити тільки кирилицю, пробіл, дефіс та апостроф'],
         },
         email: {
           type: String,
           match: emailRegEx,
           required: true,
         },
-        surname: {
+        last_name: {
           type: String,
-          match: nameRegEx,
-          required: [true, 'Будь ласка введіть коректне значення прізвища'],
+          match: pibRegEx,
+          required: [true, 'Поле може містити тільки кирилицю, пробіл, дефіс та апостроф'],
         },
         patronymic_name: {
           type: String,
-          default: '',
+          match: pibRegEx,
+          required: [true, 'Поле може містити тільки кирилицю, пробіл, дефіс та апостроф'],
         },
         settlement: {
           type: String,
@@ -66,6 +72,10 @@ const orderSchema = new Schema(
           match: flatNumberRegEx,
           default: '',
         },
+        disabilityCertificateNumber: {
+          type: String,
+          default: '',
+        },
         // idpCertificateNumber: {
         //   type: String,
         //   match: idpCertificateNumberRegEx,
@@ -76,9 +86,18 @@ const orderSchema = new Schema(
           match: idpCertificateNumberRegEx,
           default: '',
         },
+        settlementFrom: {
+          type: String,
+          default: '',
+        },
         regionFrom: {
           type: String,
-          match: address.areaCollection,
+          validate: {
+            validator: function (value) {
+              return address.areaCollection.includes(value);
+            },
+            message: 'Invalid region value',
+          },
         },
 
         memberNumber: {
@@ -123,19 +142,21 @@ const addSchema = Joi.object({
   maxQuantity: Joi.number().required(),
   status: Joi.string().valid('active', 'ready', 'archive', 'complete'),
   type: Joi.string().valid('temp_moved', 'invalid', 'child'),
+  issueDate: Joi.string().required(),
 });
 
 const addPersonToOrderSchema = Joi.object({
-  name: Joi.string().pattern(nameRegEx).required(),
+  name: Joi.string().pattern(pibRegEx).required(),
   email: Joi.string().email().required(),
-  surname: Joi.string().pattern(nameRegEx).required(),
-  patronymic_name: Joi.string(),
+  last_name: Joi.string().pattern(pibRegEx).required(),
+  patronymic_name: Joi.string().pattern(pibRegEx).required(),
   settlement: Joi.string().pattern(cityRegEx).required(),
   street: Joi.string().pattern(cityRegEx).required(),
   building: Joi.string(),
   apartment: Joi.string().pattern(flatNumberRegEx),
   idpCertificateNumber: Joi.string().pattern(idpCertificateNumberRegEx),
   birthCertificateNumber: Joi.string().pattern(idpCertificateNumberRegEx),
+  settlementFrom: Joi.string(),
   regionFrom: Joi.string().valid(...address.areaCollection),
   memberNumber: Joi.number(),
   phone: Joi.string().pattern(phoneRegex).required(),

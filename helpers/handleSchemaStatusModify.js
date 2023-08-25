@@ -8,7 +8,7 @@ async function handleSchemaStatusModify(next) {
         status: 'active',
       });
 
-      this.status = existingActiveOrder ? 'passive' : 'active';
+      this.status = existingActiveOrder ? 'ready' : 'active';
     }
 
     next();

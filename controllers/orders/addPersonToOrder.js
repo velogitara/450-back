@@ -1,13 +1,18 @@
 const moment = require('moment-timezone');
-const { v4: uuidv4 } = require('uuid');
+const { ObjectId } = require('mongoose').Types;
+// const { v4: uuidv4 } = require('uuid');
 const { HttpError } = require('../../helpers');
 const { Order } = require('../../models');
+const { SendEmail } = require('../../helpers');
 
 const TIMEZONE = 'Europe/Kiev';
 
 const addPersonToOrder = async (req, res) => {
   const { orderId: id } = req.params;
   const newPersonData = req.body;
+
+  // Generate a MongoDB-generated ObjectId for the person
+  newPersonData._id = new ObjectId();
 
   const existingOrder = await Order.findById(id);
   if (!existingOrder) {
@@ -20,7 +25,7 @@ const addPersonToOrder = async (req, res) => {
   if (isDuplicate) {
     throw HttpError(400, 'Duplicate email or phone in order');
   }
-  const newPerson = { ...newPersonData, id: uuidv4() };
+  const newPerson = { ...newPersonData };
 
   const currentTime = moment().tz(TIMEZONE); // Get time on 3 hour early
 
@@ -31,6 +36,7 @@ const addPersonToOrder = async (req, res) => {
   if (updatedOrder.nModified === 0) {
     throw HttpError(404, 'Order not found');
   }
+  await SendEmail(id, newPerson);
 
   return res.status(201).json({ user: newPerson, message: 'Person added to order successfully' });
 };

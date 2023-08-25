@@ -17,6 +17,7 @@ router.patch(
   validateBody(orderJoiSchemas.addPersonToOrderSchema),
   ctrlWrapper(ctrl.addPersonToOrder)
 );
+router.get('/:orderId/:personId', isValidId, ctrlWrapper(ctrl.activatePerson));
 
 // router.put(
 //   '/:contactId',
