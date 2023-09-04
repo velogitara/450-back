@@ -569,6 +569,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
     patch:
+      security:
+        - bearerAuth: []
       summary: Редагувати ресурс
       tags:
         - Списки на отримання допомоги
@@ -672,8 +674,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
     post:
-      security:
-        - bearerAuth: []
       tags:
         - Списки на отримання допомоги
       summary: Додати новий ресурс
