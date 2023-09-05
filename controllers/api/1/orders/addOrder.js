@@ -21,7 +21,7 @@ const addOrder = async (req, res) => {
   });
 
   if (existingOrder) {
-    return res.status(400).json({ message: 'Список з такою датою вже існує' });
+    return res.status(400).json({ message: 'Список з такою датою вже існує, вибачте' });
   }
 
   newOrderData.unparsedDate = newOrderData.issueDate;
