@@ -9,7 +9,8 @@ const secretKey = SECRET_KEY;
 const exportExcelOrder = async (req, res) => {
     try {
         const { orderId: encryptedOrderId } = req.params;
-        const decryptedOrderId = await decryptOrderId(encryptedOrderId);
+        const id = decodeURIComponent(encryptedOrderId);
+        const decryptedOrderId = await decryptOrderId(id);
         console.log(decryptedOrderId);
         const existingOrder = await Order.findById(decryptedOrderId);
         if (!existingOrder) {
